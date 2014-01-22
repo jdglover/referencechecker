@@ -1,3 +1,6 @@
+Reference checker
+=========
+
 This is a reference checker that I created to help ensure that all in-text citations in my dissertation also appear on the references page and vice-versa.  It uses regular expressions to search for the relevant information.
 
 In order to use the reference checker, you will need two plain text files.  The first file is the actual paper, article, dissertation, etc. and the second file is the references page.
@@ -19,6 +22,7 @@ The program largely works, but there are some issues I have encountered when run
 Tightening up the regular expressions should correct these issues.  This is my current to-do with the reference checker.
 
 License
+=========
 
 Copyright (c) 2014 Justin Glover
 
