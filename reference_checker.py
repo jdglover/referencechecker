@@ -2,67 +2,66 @@ import re
 import os
 
 
-my_path = ""
-my_text_file = os.path.join(my_path, "text_test.txt")
-my_reference_file = os.path.join(my_path, "references_test.txt")
+my_path = "C:/"
+my_text_file = os.path.join(my_path, ".txt")
+my_reference_file = os.path.join(my_path, ".txt")
 
 
 # searches the text for a citation with a single author
-one_author_txt = re.compile("""([A-Za-z]+)        # last name first author as group1
-                            .?                    # zero or one commas                                                
-                            \s+                   # any whitespace
-                            .?                    # zero or one parentheses                           
-                            ([0-9]{4}[a-z]?)      # date as group2""", re.X)
+one_author_txt = re.compile("""([A-Z]+[A-Za-z]+)        # last name first author as group1
+                            ['s]?                       # optional possessive                                                        
+                            .?                          # zero or one commas                                                
+                            \s+                         # any whitespace
+                            .?                          # zero or one parentheses                           
+                            ([0-9]{4}[a-z]?)            # date as group2""", re.X)
 
 # searches the text for a citation with multiple authors
-multiple_authors_txt = re.compile("""([A-Za-z]+)  # first author as group1
-                            [,]?                  # optional comma
-                            \s+                   # whitespace
-                            (&|and)               # joins both authors as group2
-                            \s+                   # optional whitespace
-                            ([A-Za-z]+)           # second author as group3
-                            [,]?                  # optional comma
-                            \s+                   # whitespace
-                            [(]?                  # optional parenthesis
-                            ([0-9]{4}[a-z]?)      # date as group4""", re.X)
+multiple_authors_txt = re.compile("""([A-Z]+[A-Za-z]+)  # first author as group1                            
+                            .?                          # optional comma
+                            \s+                         # whitespace
+                            (&|and)                     # joins both authors as group2
+                            \s+                         # optional whitespace
+                            ([A-Z]+[A-Za-z]+)           # second author as group3
+                            ['s]?                       # optional possessive
+                            .?                          # optional comma
+                            \s+                         # whitespace
+                            [(]?                        # optional parenthesis
+                            ([0-9]{4}[a-z]?)            # date as group4""", re.X)
 
 # searches the references for an entry with a single author                   
-one_author_refs = re.compile("""^([A-Za-z]+)       # last name first author as group1                                                
-                            .+                     # any other names and symbols                               
-                            [(]                    # opening brace for date
-                            ([0-9]{4}[a-z]?)       # date as group2
-                            [)]                    # closing brace for date""", re.X)
+one_author_refs = re.compile("""^([A-Z]+[A-Za-z]+)      # last name first author as group1                                                
+                            .+                          # any other names and symbols                               
+                            [(]                         # opening brace for date
+                            ([0-9]{4}[a-z]?)            # date as group2
+                            [)]                         # closing brace for date""", re.X)
 
 # searches the references for an entry with more than one author
-two_authors_refs = re.compile("""^([A-Za-z]+) # first author
-                            .+                     # any other names and symbols
-                            \s+                    # one or more whitespaces
-                            ([A-Za-z]{2,})[.]      # second author as group2
-                            \s+                    # one or more whitespaces
-                            [(]                    # opening brace for date
-                            ([0-9]{4}[a-z]?)       # date as group3
-                            [)]                    # closing brace for date""", re.X)
+two_authors_refs = re.compile("""^([A-Z]+[A-Za-z]+)     # first author
+                            .+                          # any other names and symbols
+                            (&|and)                     # joins both authors
+                            .+                          # any initials or other characters                            
+                            ([A-Z]+[A-Za-z]+)           # second author as group2
+                            .+                          # anything                            
+                            [(]                         # opening brace for date
+                            ([0-9]{4}[a-z]?)            # date as group3""", re.X)
 
 # searches the references for an entry with more than two authors
-multiple_authors_refs = re.compile("""^.+          # any characters
-                            \s+                    # whitespace
-                            ([A-Za-z]{2,})         # second to last author as group2
-                            .?                     # optional comma
-                            \s+                    # whitespace
-                            (&|and)                # joins both authors as group2
-                            .+                     # any characters
-                            \s+                    # whitespace
-                            ([A-Za-z]{2,})         # last author as group2
-                            .?                     # optional period
-                            \s+                    # optional whitespace
-                            [(]                    # optional parenthesis                            
-                            ([0-9]{4}[a-z]?)       # date as group3""", re.X)
+multiple_authors_refs = re.compile("""^.+               # any characters
+                            \s+                         # whitespace
+                            ([A-Z]+[A-Za-z]+)           # second to last author as group2
+                            .+                          # anything
+                            (&|and)                     # joins both authors as group2
+                            .+                          # any characters                            
+                            ([A-Z]+[A-Za-z]+)           # last author as group2
+                            .+                          # anything
+                            [(]                         # optional parenthesis                            
+                            ([0-9]{4}[a-z]?)            # date as group3""", re.X)
 
 # searches the references for entries that otherwise can't be matched
-misc_pattern_refs = re.compile("""^(.+)            # anything as group1
-                            [(]                    # opening brace for date
-                            ([0-9]{4}[a-z]?)       # date as group2
-                            [)]                    # closing brace for date""", re.X)
+misc_pattern_refs = re.compile("""^(.+)                 # anything as group1
+                            [(]                         # opening brace for date
+                            ([0-9]{4}[a-z]?)            # date as group2
+                            [)]                         # closing brace for date""", re.X)
 
 
 def has_pattern(pattern, text):
@@ -136,8 +135,8 @@ def get_two_authors_refs(pattern, text):
     """Returns the citation information from the references page for a work 
     with two authors."""
     output = re.search(pattern, text)
-    authors = [output.group(1), output.group(2)]                              
-    return [' '.join(authors), output.group(3)]    
+    authors = [output.group(1), output.group(3)]                              
+    return [' '.join(authors), output.group(4)]    
 
 def get_multiple_authors_refs(pattern, text):
     """Returns the citation information from the references page for a work 
@@ -213,6 +212,6 @@ def cross_check_references():
     create_refpage_references(refpage_references)
     fill_incomplete(refpage_references)
     references_not_in_text(refpage_references, text_references)
-    citations_not_in_refs(refpage_references, text_references)
+    citations_not_in_refs(refpage_references, text_references)       
 
 cross_check_references()
